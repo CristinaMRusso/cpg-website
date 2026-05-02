@@ -1,6 +1,6 @@
-# [project-name]
+# Contractor Pocket Guide
 
-**A static site deployment pipeline for [project-name].**
+**A static site deployment pipeline for Contractor Pocket Guide.**
 
 This repository contains the exported static site and a GitHub Actions workflow that deploys it to [Cloudflare Pages](https://pages.cloudflare.com).
 
