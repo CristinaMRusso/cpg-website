@@ -1,0 +1,673 @@
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+  <meta name="theme-color" content="#f1e5e0" />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+  <meta name="googlebot" content="noindex, nofollow">
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Contractor Pocket Guide" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon-180x180.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="assets/apple-touch-icon-167x167.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="assets/apple-touch-icon-152x152.png">
+
+  <title>Contractor Pocket Guide</title>
+
+  <style>
+    /* Self-hosted font files (fallback to Verdana if unavailable) */
+    @font-face{
+      font-family:"Museo Sans Rounded";
+      src:url("./assets/fonts/MuseoSansRounded300.woff") format("woff");
+      font-weight:300;
+      font-style:normal;
+      font-display:swap;
+    }
+    @font-face{
+      font-family:"Museo Sans Rounded";
+      src:url("./assets/fonts/MuseoSansRounded500.woff") format("woff");
+      font-weight:500;
+      font-style:normal;
+      font-display:swap;
+    }
+
+    :root{
+      --brand-blue:#008fc4;   /* headings + text accents */
+      --bg:#f1e5e0;           /* background */
+      --text:#000000;         /* normal text */
+
+      --pill-blue:#008fc4;    /* pill blue */
+      --pill-orange:#F25E21;  /* pill orange */
+
+      --panel: rgba(255,255,255,.70);
+      --panel2: rgba(255,255,255,.90);
+      --border: rgba(0,0,0,.12);
+      --shadow: 0 10px 22px rgba(0,0,0,.10);
+      --radius: 18px;
+      --max: 920px;
+      --base: 13.5px;
+
+      --font: "Museo Sans Rounded", Verdana, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-weight:300;
+      line-height:1.35;
+      font-size: var(--base);
+    }
+
+    /* Map bold to weight 500 (MuseoSansRounded500.woff) */
+    strong, b, summary, .btn, .cardTitle, .blockTitle{
+      font-weight:500;
+    }
+
+    a{color:var(--brand-blue) !important; text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    /* HEADER: blue background, white text (only for header section) */
+    header{
+      position:sticky;
+      top:0;
+      z-index:10;
+      background: #008fc4;
+      padding: 14px 18px;
+    }
+    header h1{
+      margin:0;
+      font-size:18px;
+      color:#ffffff;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    header .btn{
+      border: 1px solid rgba(255,255,255,.55);
+      background: transparent;
+      color: #ffffff;
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-size: 13.5px;
+      cursor: pointer;
+      user-select:none;
+      touch-action:manipulation;
+    }
+    header .btn:hover{background: rgba(255,255,255,.14)}
+    header .btn:active{transform: translateY(1px)}
+
+    .wrap{max-width:var(--max); margin:0 auto}
+    .topbar{display:flex; align-items:center; justify-content:space-between; gap:12px}
+    .brand{display:flex; align-items:center; gap:12px; min-width:0}
+
+    /* Logo: no extra formatting (no rounded rects, no background) */
+    .logo{
+      height:44px;
+      width:auto;
+      flex:0 0 auto;
+      display:flex;
+      align-items:center;
+    }
+    .logo img{
+      height:44px;
+      width:auto;
+      display:block;
+    }
+
+    main{padding:18px}
+    .cards{display:grid; gap:16px}
+
+    .card{
+      background: linear-gradient(180deg, var(--panel2), var(--panel));
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .cardHead{
+      padding:14px 14px 10px;
+      border-bottom:1px solid rgba(0,0,0,.08);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .cardTitle{
+      margin:0;
+      font-size:13.5px;
+      color: var(--brand-blue);
+    }
+
+    .searchRow{
+      padding: 12px 14px 14px;
+      border-bottom:1px solid rgba(0,0,0,.08);
+    }
+
+    .search{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      background: rgba(255,255,255,.80);
+      border:1px solid var(--border);
+      border-radius: 14px;
+      padding:10px 12px;
+    }
+
+    .search input{
+      width:100%;
+      background: transparent;
+      border:none;
+      outline:none;
+      font-family: var(--font);
+      font-weight:300;
+      font-size:14px;
+      color: var(--text);
+    }
+
+    details{border-top:1px solid rgba(0,0,0,.08)}
+    summary{
+      list-style:none;
+      cursor:pointer;
+      padding:14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      color: var(--brand-blue);
+    }
+    summary::-webkit-details-marker{display:none}
+
+    .chev{
+      width:20px; height:20px;
+      flex:0 0 auto;
+      transform: rotate(0deg);
+      transition: transform .18s ease;
+      opacity:.85;
+    }
+    details[open] .chev{transform: rotate(180deg)}
+
+    .content{
+      padding: 0 14px 14px;
+      font-size: var(--base);
+      color: var(--text);
+    }
+    .content *{
+      font-size: var(--base);
+      color: var(--text);
+      font-weight:300;
+      font-family: var(--font);
+    }
+
+    .block{
+      background: rgba(255,255,255,.85);
+      border:1px solid rgba(0,0,0,.10);
+      border-radius: 14px;
+      padding: 12px;
+      margin-top: 10px;
+    }
+    .blockTitle{
+      margin:0 0 8px;
+      font-weight:500;
+      color: var(--brand-blue);
+    }
+
+    ol, ul{margin:8px 0 0 18px; padding:0}
+    li{margin:6px 0}
+
+    /* Make ordered list numbers slightly smaller */
+    ol li::marker{
+      font-size: 0.85em;
+      font-weight:500;
+      color: rgba(0,0,0,.75);
+    }
+
+    .callout{
+      margin-top:10px;
+      padding:10px 12px;
+      border:1px solid rgba(0,0,0,.10);
+      border-radius: 14px;
+      background: rgba(255,255,255,.70);
+    }
+    .callout strong{
+      display:block;
+      margin-bottom:4px;
+      color: var(--brand-blue);
+      font-weight:500;
+    }
+    .callout p{margin:0}
+
+    /* Pills: white bold text; blue + orange variants */
+    .pill{
+      display:inline-block;
+      border-radius:13px;
+      padding:10px 12px;
+      color:#ffffff !important;
+      font-weight:500 !important;
+      font-size:13.5px !important;
+      line-height:1.1;
+      margin-top:8px;
+      max-width:100%;
+    }
+    .pill.blue{background: var(--pill-blue)}
+    .pill.orange{background: var(--pill-orange)}
+
+    @media (min-width:760px){
+      summary{padding:16px}
+      .content{padding:0 16px 16px}
+      .cardHead{padding:16px 16px 12px}
+      .searchRow{padding:12px 16px 16px}
+      header{padding: 14px 18px}
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="wrap topbar">
+      <div class="brand">
+        <div class="logo" aria-label="Hi Thrive logo">
+          <img src="./assets/hi-thrive-logo.svg" alt="Hi Thrive" />
+        </div>
+        <h1>Contractor Pocket Guide</h1>
+      </div>
+
+      <button class="btn" id="expandAllBtn" type="button" aria-expanded="false">Expand all</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap cards">
+      <section class="card" aria-label="Quick actions">
+
+
+        <div class="searchRow">
+          <div class="search" role="search">
+            <span aria-hidden="true">🔎</span>
+            <input id="filterInput" type="search" placeholder="Filter (e.g. no-show, late, safety, billing)" autocomplete="off" />
+          </div>
+        </div>
+
+
+        <!-- Running late -->
+        <details data-section>
+          <summary>
+            <span>If you are running late</span>
+            <svg class="chev" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M5 7l5 6 5-6" stroke="rgba(0,0,0,.65)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </summary>
+
+          <div class="content">
+          
+          
+            <div class="block">
+              <p class="blockTitle">Able to proceed and complete the full session</p>
+              <ol>
+                <li>Call client (caller ID can be disabled if preferred) to inform them and provide your estimated time of arrival.</li>
+                <li>No further action required.</li>
+              </ol>
+            </div>
+            
+            <div class="block">
+              <p class="blockTitle">Able to proceed and complete a partial session</p>
+              <ol>
+                <li>Call client (caller ID can be disabled if preferred) to inform them and provide your estimated time of arrival.</li>
+                <li>Email <a href="mailto:accounts@hithrive.com.au">accounts@hithrive.com.au</a> and state the exact duration to be billed.</li>
+              </ol>
+                <p class="pill orange">Notify the admin team ASAP or the full invoice may be automatically sent.</p>
+
+            </div>
+            
+            <div class="block">
+              <p class="blockTitle">Unable to proceed</p>
+              <ol>
+                <li>Call the family and advise them of the situation. State clearly they will not be charged.</li>
+                <li>Delete the appointment in Halaxy.</li>
+                <li>Email <a href="mailto:accounts@hithrive.com.au">accounts@hithrive.com.au</a> to notify of the occurrence.</li>
+              </ol>
+                <p class="pill orange">Notify the admin team ASAP or the full invoice may be automatically sent.</p>
+            </div>
+          
+          </div>
+        </details>
+
+        <!-- Client runs late -->
+        <details id="client-running-late" data-section>
+          <summary>
+            <span>If client is running late</span>
+            <svg class="chev" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M5 7l5 6 5-6" stroke="rgba(0,0,0,.65)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </summary>
+            
+
+          <div class="content">
+
+
+            <div class="block">
+              <ol>
+                <li>Call client (caller ID can be disabled if preferred).</li>
+                <li>Leave voicemail (state you will wait 15 minutes).</li>
+                <li>Wait 2–3 minutes</li>
+                <li>Call again - leave voicemail if possible.</li>
+                <li>Wait until 15 minutes from session start time.</li>
+              </ol>
+			</div>
+
+            <div class="block">
+              <p class="blockTitle">Arrives within the first 15 minutes</p>
+              <p>Session proceeds as per normal.</p>
+            </div>
+            
+            <div class="block">
+              <p class="blockTitle">Arrives after the first 15 minutes</p>
+              <ul>
+                <li>Session does not need to proceed (you may proceed at your discretion).</li>
+                <li>You may choose to use remaining time but you are not obligated to do so.</li>
+              </ul>
+              <p class="pill blue">Our Service Agreement clearly states that if a client is more than 15 mins late, the full fee will be charged.</p>
+              <div><p class="pill orange">Follow the applicable 'No-show' process below.</p></div>
+            </div>
+
+
+          </div>
+        </details>
+
+        <!-- No-Show (home visit/telehealth) -->
+        <details id="no-show-home" data-section>
+          <summary>
+            <span>No-show (home visit/telehealth)</span>
+            <svg class="chev" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M5 7l5 6 5-6" stroke="rgba(0,0,0,.65)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </summary>
+
+          <div class="content">
+
+              <div class="block">
+                <ol>
+                  <li>Ensure you have followed the <a href="#client-running-late">'If client is running late'</a> process above.</li>
+                  <li>Session does not need to proceed (you may proceed at your discretion). You may choose to use the remaining time but you are not obligated to do so.
+                   <br/><p class="pill blue">Our Service Agreement clearly states that if a client is more than 15 mins late, the full fee will be charged.</p></li>
+                  <li>Email <a href="mailto:accounts@hithrive.com.au">accounts@hithrive.com.au</a> and include:</li>
+                  <ul>
+                  	<li>Client name</li>
+                  	<li>Date and time</li>
+                  	<li>Confirmation 2 calls were made</li>
+                  	<li>Confirmation 15 minutes waited</li>
+                  </ul>
+                </ol>
+              </div>
+
+            <div class="block">
+              <p class="blockTitle">Record a clinical note</p>
+              <ol>
+                <li>Open appointment.</li>
+                <li>Click pencil icon.</li>
+                <li>Click Templates.</li>
+                <li>Search “No-Show”.</li>
+                <li>Select template.</li>
+                <li>Edit details.</li>
+                <li>Save &amp; publish.</li>
+              </ol>
+              <p class="pill orange">You must publish a note for a no-show.</p>
+            </div>
+          
+        </details>
+        
+        <!-- No Show (school/kinder/daycare) -->
+        <details id="no-show-kinder" data-section>
+          <summary>
+            <span>No-show (school/kinder/daycare)</span>
+            <svg class="chev" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M5 7l5 6 5-6" stroke="rgba(0,0,0,.65)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </summary>
+
+          <div class="content">
+
+
+            <div class="block">
+              <ol>
+                <li>Check in at reception and confirm child not on-site.</li>
+                <li>Email <a href="mailto:accounts@hithrive.com.au">accounts@hithrive.com.au</a> and include:</li>
+                  <ul>
+                  	<li>Client name</li>
+                  	<li>Date and time</li>
+                  	<li>Reception confirmed child absent</li>
+                  </ul>
+              </ol>
+            <p class="pill orange">Do not contact the parent - the admin team will handle follow-up.</p>
+            </div>
+            
+                        <div class="block">
+              <p class="blockTitle">Record a clinical note</p>
+              <ol>
+                <li>Open appointment.</li>
+                <li>Click pencil icon.</li>
+                <li>Click Templates.</li>
+                <li>Search “No-Show”.</li>
+                <li>Select template.</li>
+                <li>Edit details.</li>
+                <li>Save &amp; publish.</li>
+              </ol>
+              <p class="pill orange">You must publish a note for a no-show.</p>
+            </div>
+            
+            </div>
+			</details>
+
+
+
+        <!-- Extra time requested -->
+        <details data-section>
+          <summary>
+            <span>Extra time requested</span>
+            <svg class="chev" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M5 7l5 6 5-6" stroke="rgba(0,0,0,.65)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </summary>
+
+          <div class="content">
+            <div class="block">
+              <ol>
+                <li>If you agree to stay longer, clearly state that the extra time is billable.</li>
+                <li>Document verbal consent to be billed for extra time in the clinical note.</li>
+                <li>Notify the admin team immediately via the 'Billing Requests' channel.</li>
+              </ol>
+              <p>Invoices are automatically sent after session - additional time cannot be added once sent.</p>
+              <p class="pill orange">Failure to promptly notify the admin team may result in you not being paid for extra time.</p>
+            </div>
+          </div>
+        </details>
+
+        <!-- Billing questions -->
+        <details data-section>
+          <summary>
+            <span>Billing questions</span>
+            <svg class="chev" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M5 7l5 6 5-6" stroke="rgba(0,0,0,.65)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </summary>
+
+          <div class="content">
+            <div class="block">
+              <ul>
+                <li>Direct all billing queries to <a href="mailto:accounts@hithrive.com.au">accounts@hithrive.com.au</a>.</li>
+                <li>Do not negotiate fees on-site.</li>
+              </ul>
+            </div>
+          </div>
+        </details>
+
+        <!-- Cancellations -->
+        <details data-section>
+          <summary>
+            <span>Cancellations</span>
+            <svg class="chev" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M5 7l5 6 5-6" stroke="rgba(0,0,0,.65)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </summary>
+
+          <div class="content">
+            <div class="block">
+              <ul>
+                <li>If a client attempts to cancel through you, direct them to <a href="https://www.hithrive.com.au/cancel" target="_blank" rel="noopener">hithrive.com.au/cancel</a></li>
+                <li>No cancellations will be processed outside this form.</li>
+              </ul>
+            </div>
+          </div>
+        </details>
+
+        <!-- Safety -->
+        <details data-section>
+          <summary>
+            <span>Safety concerns</span>
+            <svg class="chev" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M5 7l5 6 5-6" stroke="rgba(0,0,0,.65)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </summary>
+
+          <div class="content">
+            <div class="block">
+              <ul>
+                <li>You must ensure you have read all risk assessments prior to attending premises.</li>
+                <li>It is your responsibility to ensure a risk assessment has been done for all locations you are attending.</li>
+              </ul>
+            </div>
+            
+                 <div class="block">
+              <p class="blockTitle">Examples of unsafe behaviour</p>
+              <ul>
+                <li>Aggressive or threatening behaviour.</li>
+                <li>Uncontrolled/aggressive animal.</li>
+                <li>Verbal abuse.</li>
+                <li>Physical intimidation.</li>
+                <li>Any situation that feels unsafe.</li>
+              </ul>
+            </div>       
+
+            <div class="block">
+              <p class="blockTitle">If you believe your safety or wellbeing is at risk</p>
+              <p>You have the right to:</p>
+              <ul>
+                <li>Refuse to enter the premises.</li>
+                <li>Stop the session immediately.</li>
+                <li>Leave the premises.</li>
+              </ul>
+              <p class="pill orange">A perceived threat is enough. You do not need proof of actual danger.</p>
+            </div>
+
+
+            <div class="block">
+              <p class="blockTitle">If you feel unsafe</p>
+              <ol>
+                <li>End the session immediately.</li>
+                <li>State: “I am unable to continue due to safety concerns.”</li>
+                <li>Leave the premises.</li>
+                <li>Go to a safe location.</li>
+                <li>Call Cristina (Director) on Microsoft Teams.</li>
+                <li>If Cristina does not answer, call Clara (Senior Occupational Therapist).</li>
+                <li>Complete a clinical note documenting the incident.</li>
+              </ol>
+              <p class="pill orange">If in immediate danger, call emergency services.</p>
+         	  <p class="pill blue">Your safety comes first. Do not argue onsite - the appointment remains billable.</p>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <!-- Install as an app -->
+      <section class="card" aria-label="Install instructions">
+      
+              <details data-section>
+          <summary>
+            <span>Add to my home screen</span>
+            <svg class="chev" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M5 7l5 6 5-6" stroke="rgba(0,0,0,.65)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </summary>
+
+        <div class="content">
+          <div class="block">
+            <p class="blockTitle">iPhone (Safari)</p>
+            <ol>
+              <li>Open this page in Safari.</li>
+              <li>Tap Share.</li>
+              <li>Tap “Add to Home Screen”.</li>
+            </ol>
+          </div>
+          <div class="block">
+            <p class="blockTitle">Android (Chrome)</p>
+            <ol>
+              <li>Open this page in Chrome.</li>
+              <li>Tap the menu (⋮).</li>
+              <li>Tap “Add to Home screen” or “Install app”.</li>
+            </ol>
+          </div>
+        </div>
+        </details>
+        
+
+      </section>
+    </div>
+  </main>
+
+  <script>
+    // Expand/Collapse all
+    const expandBtn = document.getElementById('expandAllBtn');
+    const sections = Array.from(document.querySelectorAll('details[data-section]'));
+
+	function openFromHash() {
+	  const hash = window.location.hash
+	  if (!hash) return;
+	  
+	  const el = document.querySelector(hash);
+	  if (el && el.tagName.toLowerCase() === "details") {
+	      el.open = true;
+	      el.scrollIntoView({ behavior: "smooth", block: "start"});
+	  }
+	}
+	window.addEventListener("load", openFromHash)
+    window.addEventListener("hashchange", openFromHash)
+
+    function setAll(open){
+      sections.forEach(d => { d.open = open; });
+      expandBtn.setAttribute('aria-expanded', String(open));
+      expandBtn.textContent = open ? 'Collapse all' : 'Expand all';
+    }
+
+    expandBtn.addEventListener('click', () => {
+      const anyClosed = sections.some(d => !d.open);
+      setAll(anyClosed);
+    });
+
+    // Filter (hides non-matching accordion sections)
+    const input = document.getElementById('filterInput');
+    input.addEventListener('input', () => {
+      const q = input.value.trim().toLowerCase();
+      sections.forEach(d => {
+        const text = d.innerText.toLowerCase();
+        d.style.display = (q === '' || text.includes(q)) ? '' : 'none';
+      });
+    });
+
+    // Optional service worker registration (only if sw.js exists)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
