@@ -9,7 +9,7 @@ on:
         options:
           - 'Use uploaded archive'
           - 'Use existing raw/'
-        default: 'Use uploaded archive'
+        default: 'Use existing raw/'
       copy_root_files:
         description: 'Copy .html, .xml, .txt and font files from repo root into dist/'
         type: boolean
