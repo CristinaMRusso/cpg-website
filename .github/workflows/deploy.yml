@@ -1,0 +1,103 @@
+name: Build and Deploy to Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      export_source:
+        description: 'Export source'
+        type: choice
+        options:
+          - 'Use uploaded archive'
+          - 'Use existing raw/'
+        default: 'Use uploaded archive'
+      copy_root_files:
+        description: 'Copy .html, .xml, .txt and font files from repo root into dist/'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prevent running on non-main branch
+        run: |
+          if [ "${{ github.ref }}" != "refs/heads/main" ]; then
+            echo "ERROR: This workflow must be run from the main branch."
+            exit 1
+          fi
+
+      # Manual archive - extract uploaded zip from uploads/
+      # To use: commit your downloaded .zip to uploads/export.zip before triggering
+      - name: Extract uploaded archive
+        if: inputs.export_source == 'Use uploaded archive'
+        run: |
+          if [ ! -f uploads/export.zip ]; then
+            echo "No archive found at uploads/export.zip - aborting."
+            exit 1
+          fi
+          rm -rf raw
+          python3 scripts/extract-zip.py uploads/export.zip raw
+
+      # Use existing raw/ - confirm it exists
+      - name: Confirm existing raw/ will be used
+        if: inputs.export_source == 'Use existing raw/'
+        run: |
+          if [ ! -d raw ]; then
+            echo "No raw/ directory found - aborting."
+            exit 1
+          fi
+          echo "Using existing raw/ directory ($(find raw -type f | wc -l) files)."
+
+      # Always - copy raw/ to dist/
+      - name: Copy raw to dist
+        run: bash scripts/copy-raw.sh
+
+      - name: Copy root files
+        if: inputs.copy_root_files
+        run: |
+          # Copy fonts
+          find . -maxdepth 1 \( -name "*.woff" -o -name "*.woff2" -o -name "*.ttf" -o -name "*.otf" -o -name "*.eot" \) | while read f; do
+            cp "$f" dist/
+            echo "  Copied $f"
+          done
+          # Copy .html, .xml and .txt files (excluding README)
+          find . -maxdepth 1 \( -name "*.html" -o -name "*.xml" -o -name "*.txt" \) ! -name "README*" | while read f; do
+            cp "$f" dist/
+            echo "  Copied $f"
+          done
+
+      # Commit raw/ and dist/
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+
+      - name: Commit export artifacts
+        run: |
+          git add raw/ dist/
+          git diff --staged --quiet || git commit -m "chore: export $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          git push origin main
+
+      # Deploy to Cloudflare Pages (production)
+      - name: Deploy to Cloudflare Pages (production)
+        run: npx wrangler@latest pages deploy dist --project-name=${{ secrets.CLOUDFLARE_PROJECT_NAME }} --branch=main --commit-dirty=true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      # Cleanup old deployments
+      - name: Clean up old deployments
+        run: node scripts/cleanup-deployments.js
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CF_PAGES_PROJECT: ${{ secrets.CLOUDFLARE_PROJECT_NAME }}
