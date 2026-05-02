@@ -34,6 +34,11 @@ jobs:
             exit 1
           fi
 
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
       # Manual archive - extract uploaded zip from uploads/
       # To use: commit your downloaded .zip to uploads/export.zip before triggering
       - name: Extract uploaded archive
